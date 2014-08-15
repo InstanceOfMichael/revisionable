@@ -69,9 +69,27 @@ trait RevisionableTrait
             // we can only safely compare basic items,
             // so for now we drop any object based items, like DateTime
             foreach ($this->updatedData as $key => $val) {
-                if (gettype($val) == 'object') {
-                    unset($this->originalData[$key]);
-                    unset($this->updatedData[$key]);
+                if (is_object($val){
+                    if (method_exists($val,'toRevisionString')){
+                        $this->updatedData[$key] = $val->toRevisionString();
+                    }
+                    elseif (true /* TODO Config::get('revisionable.attempt-to-parse-obj-to-string')*/)
+                    {
+                        try
+                        {
+                            $this->updatedData[$key] = (string)$this->updatedData[$key];
+                        }
+                        catch(Exception $e)
+                        {
+                            $this->updatedData[$key] = '[Object]';
+                            Log::notice("RevisionableTrait (Extended): Could Not Parse Object of Class ".get_class($val)." to String for attribute $key.");
+                        }
+                    }
+                    else
+                    {
+                        unset($this->originalData[$key]);
+                        unset($this->updatedData[$key]);
+                    }
                 }
             }
 
@@ -121,8 +139,8 @@ trait RevisionableTrait
                     'old_value'             => array_get($this->originalData, $key),
                     'new_value'             => $this->updatedData[$key],
                     'user_id'               => $this->getUserId(),
-                    'created_at'            => new \DateTime(),
-                    'updated_at'            => new \DateTime(),
+                    'created_at'            => (string)\Carbon\Carbon::now(),
+                    'updated_at'            => (string)\Carbon\Carbon::now(),
                 );
 
             }
