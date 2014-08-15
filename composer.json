@@ -10,6 +10,9 @@
             "email": "me@chrisduell.com"
         }
     ],
+    "replace":{
+        "venturecraft/revisionable":"1.*"
+    },
     "support": {
         "issues": "https://github.com/VentureCraft/revisionable/issues",
         "source": "https://github.com/VentureCraft/revisionable"
