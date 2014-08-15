@@ -18,7 +18,7 @@
         }
     ],
     "replace":{
-        "venturecraft/revisionable":"1.*"
+        "venturecraft/revisionable":">=1.10"
     },
     "support": {
         "issues": "https://github.com/VentureCraft/revisionable/issues",
